@@ -9,12 +9,24 @@ import UIKit
 import SpriteKit
 
 class TetrisBlockNode: SKNode {
-    private let shape: TetrisShape
-    private lazy var blockWidth = UIScreen.main.bounds.width / 10
+    let shape: TetrisShape
+    private lazy var blockWidth = 30
     private lazy var blockSize = CGSize(width: blockWidth, height: blockWidth)
-
-    init(tetrisShape: TetrisShape) {
+    var angle: Angle = .zero {
+        didSet {
+            zRotation = angle.rawValue
+        }
+    }
+    let hasPhysicsBody: Bool // Boolean whether this shape needs to be affected by gravity and collision
+    
+    init(
+        tetrisShape: TetrisShape,
+        angle: Angle = .zero,
+        hasPhysicsBody: Bool
+    ) {
         self.shape = tetrisShape
+        self.angle = angle
+        self.hasPhysicsBody = hasPhysicsBody
         super.init()
         // Setup the block
         setup()
@@ -27,7 +39,9 @@ class TetrisBlockNode: SKNode {
     private func setup() {
         let blockPositions = shape.calculatePositions(with: blockSize.width)
         addBlocksToBlockNode(positions: blockPositions)
-        configurePhysicsBody()
+        if hasPhysicsBody {
+            configurePhysicsBody()
+        }
     }
     
     private func configurePhysicsBody() {
@@ -66,7 +80,9 @@ class TetrisBlockNode: SKNode {
         }
         
         // Define the physicsbody of the tetrisShape by combining the physicsbodies of individual blocks
-        self.physicsBody = SKPhysicsBody(bodies: physicsBodies)
+        if hasPhysicsBody {
+            self.physicsBody = SKPhysicsBody(bodies: physicsBodies)
+        }
     }
 }
 

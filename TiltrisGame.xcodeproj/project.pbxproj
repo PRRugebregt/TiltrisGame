@@ -18,6 +18,9 @@
 		01F5BC782D4FDD4400E2B8CF /* PhysicsCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F5BC772D4FDD4400E2B8CF /* PhysicsCategory.swift */; };
 		01F5BC7A2D51502300E2B8CF /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F5BC792D51502300E2B8CF /* GameView.swift */; };
 		01F5BC7C2D51512B00E2B8CF /* TiltrisApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F5BC7B2D51512B00E2B8CF /* TiltrisApp.swift */; };
+		01F5BC7E2D53DA1300E2B8CF /* ScoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F5BC7D2D53DA1300E2B8CF /* ScoreManager.swift */; };
+		01F5BC802D53DAA200E2B8CF /* ScoreBin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F5BC7F2D53DAA200E2B8CF /* ScoreBin.swift */; };
+		01F5BC822D53E1F900E2B8CF /* ScoreBinNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F5BC812D53E1F900E2B8CF /* ScoreBinNode.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +36,9 @@
 		01F5BC772D4FDD4400E2B8CF /* PhysicsCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhysicsCategory.swift; sourceTree = "<group>"; };
 		01F5BC792D51502300E2B8CF /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 		01F5BC7B2D51512B00E2B8CF /* TiltrisApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TiltrisApp.swift; sourceTree = "<group>"; };
+		01F5BC7D2D53DA1300E2B8CF /* ScoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreManager.swift; sourceTree = "<group>"; };
+		01F5BC7F2D53DAA200E2B8CF /* ScoreBin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreBin.swift; sourceTree = "<group>"; };
+		01F5BC812D53E1F900E2B8CF /* ScoreBinNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreBinNode.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,6 +80,8 @@
 				01F5BC632D4E007600E2B8CF /* LaunchScreen.storyboard */,
 				01F5BC722D4EB31D00E2B8CF /* NodeConfigurator.swift */,
 				01F5BC7B2D51512B00E2B8CF /* TiltrisApp.swift */,
+				01F5BC7D2D53DA1300E2B8CF /* ScoreManager.swift */,
+				01F5BC7F2D53DAA200E2B8CF /* ScoreBin.swift */,
 			);
 			path = TiltrisGame;
 			sourceTree = "<group>";
@@ -90,6 +98,7 @@
 			isa = PBXGroup;
 			children = (
 				01F5BC6D2D4E8F3900E2B8CF /* TetrisBlockNode.swift */,
+				01F5BC812D53E1F900E2B8CF /* ScoreBinNode.swift */,
 			);
 			path = Nodes;
 			sourceTree = "<group>";
@@ -183,11 +192,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				01F5BC6C2D4E8EA900E2B8CF /* TetrisShape.swift in Sources */,
+				01F5BC802D53DAA200E2B8CF /* ScoreBin.swift in Sources */,
 				01F5BC782D4FDD4400E2B8CF /* PhysicsCategory.swift in Sources */,
+				01F5BC7E2D53DA1300E2B8CF /* ScoreManager.swift in Sources */,
 				01F5BC6E2D4E8F3900E2B8CF /* TetrisBlockNode.swift in Sources */,
 				01F5BC712D4EB19F00E2B8CF /* SKPhysicsContact + extensions.swift in Sources */,
 				01F5BC7A2D51502300E2B8CF /* GameView.swift in Sources */,
 				01F5BC5B2D4E007400E2B8CF /* GameScene.swift in Sources */,
+				01F5BC822D53E1F900E2B8CF /* ScoreBinNode.swift in Sources */,
 				01F5BC7C2D51512B00E2B8CF /* TiltrisApp.swift in Sources */,
 				01F5BC732D4EB31D00E2B8CF /* NodeConfigurator.swift in Sources */,
 				01F5BC552D4E007400E2B8CF /* AppDelegate.swift in Sources */,
