@@ -10,14 +10,15 @@ import SpriteKit
 
 class TetrisBlockNode: SKNode {
     let shape: TetrisShape
-    private lazy var blockWidth = 30
-    private lazy var blockSize = CGSize(width: blockWidth, height: blockWidth)
     var angle: Angle = .zero {
         didSet {
             zRotation = angle.rawValue
         }
     }
-    let hasPhysicsBody: Bool // Boolean whether this shape needs to be affected by gravity and collision
+    
+    private lazy var blockWidth = 20
+    private lazy var blockSize = CGSize(width: blockWidth, height: blockWidth)
+    private let hasPhysicsBody: Bool // Boolean whether this shape needs to be affected by gravity and collision
     
     init(
         tetrisShape: TetrisShape,
@@ -37,6 +38,9 @@ class TetrisBlockNode: SKNode {
     }
     
     private func setup() {
+        // Set the correct rotation for the angle
+        zRotation = angle.rawValue
+
         let blockPositions = shape.calculatePositions(with: blockSize.width)
         addBlocksToBlockNode(positions: blockPositions)
         if hasPhysicsBody {
@@ -49,6 +53,7 @@ class TetrisBlockNode: SKNode {
         physicsBody?.affectedByGravity = true
         physicsBody?.isDynamic = true
         physicsBody?.allowsRotation = true
+        physicsBody?.angularDamping = 1
         physicsBody?.restitution = 0.0
         physicsBody?.friction = 0.5
         physicsBody?.linearDamping = 0.3
@@ -83,6 +88,20 @@ class TetrisBlockNode: SKNode {
         if hasPhysicsBody {
             self.physicsBody = SKPhysicsBody(bodies: physicsBodies)
         }
+    }
+    
+    /// Returns the animation when a block hits one of the bins
+    func finalActionAnimation(_ isCorrect: Bool) -> SKAction {
+        let fadeAction = SKAction.fadeOut(withDuration: 2)
+        let colorAction = SKAction.customAction(withDuration: 2) { node, float in
+            for child in node.children {
+                if let child = child as? SKSpriteNode {
+                    child.run(SKAction.colorize(with: isCorrect ? .green : .red, colorBlendFactor: 1, duration: 2))
+                }
+            }
+        }
+        let combinedAnimation = SKAction.group([fadeAction, colorAction])
+        return combinedAnimation
     }
 }
 

@@ -9,6 +9,5 @@ import Foundation
 
 struct ScoreBin {
     let shape: TetrisShape
-    let rotation: CGFloat
-    
+    let angle: Angle
 }

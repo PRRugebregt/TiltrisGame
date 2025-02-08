@@ -4,18 +4,20 @@ import CoreMotion
 protocol ScoreBinProtocol: AnyObject {
     func didResetScoreBins(scoreBins: [ScoreBin])
     func didSpeedUp()
+    func updateScoreLabel(text: String)
 }
 
 class GameScene: SKScene {
     private let motionManager: CMMotionManager = CMMotionManager()
     private var scoreManager: ScoreManagerProtocol = ScoreManager()
     
+    private var scoreLabel: SKLabelNode = SKLabelNode(text: "Score: 0")
     private var gameBounds: SKShapeNode?
     private var tetrisBlocks: [SKNode] = []
     private var currentBlock: TetrisBlockNode?
     private var scoreBinNodes: [ScoreBinNode] = []
     
-    private var isAnimating = false
+    private var isAnimating = false // Flag to check if the block is in the middle of animating 
     
     private var gravityPull = 0.2
         
@@ -29,9 +31,8 @@ class GameScene: SKScene {
         
         startTrackingDeviceTilt()
         setupGameBounds(view: view)
-        spawnBlock(at: CGPoint(x: size.width / 2, y: size.height * 0.8))
-        addChild(scoreManager.label)
-        scoreManager.label.position = CGPoint(x: view.frame.size.width / 2, y: view.frame.size.height - 80)
+        setupScoreLabel()
+        spawnBlock()
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -73,6 +74,8 @@ class GameScene: SKScene {
         physicsWorld.gravity = gravityVector
     }
     
+    // MARK: Setup labels
+    
     private func setupGameBounds(view: SKView) {
         let lineWidth: CGFloat = 10
         let safeInsets = view.safeAreaInsets
@@ -96,9 +99,27 @@ class GameScene: SKScene {
         addChild(gameBounds!)
     }
     
-    private func spawnBlock(at position: CGPoint) {
+    private func setupScoreLabel() {
+        guard let view else { return }
+        addChild(scoreLabel)
+        scoreLabel.position = CGPoint(x: view.frame.size.width / 2, y: view.frame.size.height - 80)
+        scoreLabel.fontColor = .yellow
+        scoreLabel.zPosition = 20
+    }
+    
+    private func spawnBlock() {
+        currentBlock?.removeFromParent()
+
         guard let randomShape = TetrisShape.allCases.randomElement() else { return }
-        let block = TetrisBlockNode(tetrisShape: randomShape, hasPhysicsBody: true)
+        
+        let position = CGPoint(
+            x: CGFloat.random(in: 100 ... UIScreen.main.bounds.width - 100),
+            y: UIScreen.main.bounds.height - 200
+        )
+        let block = TetrisBlockNode(
+            tetrisShape: randomShape,
+            hasPhysicsBody: true
+        )
         block.position = position
         currentBlock = block
         addChild(block)
@@ -113,34 +134,24 @@ extension GameScene: SKPhysicsContactDelegate {
 
         guard let currentBlock else { return }
 
-        let isCorrectShape: Bool
+        let isCorrect: Bool
         
         if bodyA.categoryBitMask == PhysicsCategory.scoreBin.rawValue {
-            guard let scoreBinNode = bodyA.node as? TheBin else { return }
-            isCorrectShape = scoreManager.checkForScore(scoreBinNode, currentBlock: currentBlock)
+            guard let scoreBinNode = bodyA.node as? BinNode else { return }
+            isCorrect = scoreManager.checkForScore(scoreBinNode.scoreBin, currentBlock: currentBlock)
         } else if bodyB.categoryBitMask == PhysicsCategory.scoreBin.rawValue {
-            guard let scoreBinNode = bodyB.node as? TheBin else { return }
-            isCorrectShape = scoreManager.checkForScore(scoreBinNode, currentBlock: currentBlock)
+            guard let scoreBinNode = bodyB.node as? BinNode else { return }
+            isCorrect = scoreManager.checkForScore(scoreBinNode.scoreBin, currentBlock: currentBlock)
         } else {
             return
         }
         
         isAnimating = true
         
-        let action = SKAction.customAction(withDuration: 2) { node, float in
-            if let node = node as? TetrisBlockNode {
-                for child in node.children {
-                    if let child = child as? SKSpriteNode {
-                        child.run(SKAction.colorize(with: isCorrectShape ? .green : .red, colorBlendFactor: 1, duration: 2))
-                    }
-                }
-            }
-        }
+        let action = currentBlock.finalActionAnimation(isCorrect)
         
         currentBlock.run(action) {
-            currentBlock.removeFromParent()
-            let position = CGPoint(x: CGFloat.random(in: 100 ... UIScreen.main.bounds.width - 100), y: UIScreen.main.bounds.height - 200)
-            self.spawnBlock(at: position)
+            self.spawnBlock()
             self.isAnimating = false
         }
     }
@@ -175,5 +186,9 @@ extension GameScene: ScoreBinProtocol {
     
     func didSpeedUp() {
         gravityPull += 0.2
+    }
+    
+    func updateScoreLabel(text: String) {
+        scoreLabel.text = text
     }
 }

@@ -1,0 +1,42 @@
+//
+//  Coordinator.swift
+//  TiltrisGame
+//
+//  Created by Patrick Rugebregt on 08/02/2025.
+//
+
+import Foundation
+import SwiftUI
+
+enum Destination {
+    case home
+    case instruction
+    case game
+    case settings
+}
+
+protocol NavigationProtocol {
+    func navigate(to: Destination)
+}
+
+class Coordinator: ObservableObject, NavigationProtocol {
+    @Published var currentDestination: Destination?
+    
+    func navigate(to destination: Destination) {
+        currentDestination = destination
+    }
+    
+    @ViewBuilder
+    func build(for destination: Destination) -> some View {
+        switch destination {
+        case .home:
+            HomeView()
+        case .instruction:
+            InstructionView()
+        case .game:
+            GameView()
+        case .settings:
+            InstructionView()
+        }
+    }
+}

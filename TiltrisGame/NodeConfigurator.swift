@@ -9,6 +9,7 @@ import Foundation
 import SpriteKit
 
 final class NodeConfigurator {
+    /// Create a default square yellow block. Using SpriteNode to have the ability to animate color
     static func createDefaultBlock(position: CGPoint, blockSize: CGSize) -> SKSpriteNode {
         let block = SKSpriteNode(color: .yellow, size: blockSize)
         block.position = position

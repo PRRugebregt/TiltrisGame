@@ -9,10 +9,9 @@ import Foundation
 import SpriteKit
 
 protocol ScoreManagerProtocol {
-    var label: SKLabelNode { get set }
     var scoreBins: [ScoreBin] { get set }
     var delegate: ScoreBinProtocol? { get set }
-    func checkForScore(_ scoreBinNode: TheBin, currentBlock: TetrisBlockNode) -> Bool
+    func checkForScore(_ scoreBin: ScoreBin, currentBlock: TetrisBlockNode) -> Bool
 }
 
 /// Angle enum with rawValue that represents radians for rotation
@@ -34,21 +33,32 @@ enum Angle: CGFloat, CaseIterable {
             return .zero
         }
     }
+    
+    static func isBothHorizontalOrVertical(angleA: Angle, angleB: Angle) -> Bool {
+        return (angleA.isVertical() && angleB.isVertical()) || (angleA.isHorizontal() && angleB.isHorizontal())
+    }
+    
+    func isHorizontal() -> Bool {
+        return self == .ninety || self == .twoSeventy
+    }
+    
+    func isVertical() -> Bool {
+        return self == .zero || self == .oneEighty
+    }
 }
 
 class ScoreManager: ScoreManagerProtocol {
     var scoreBins: [ScoreBin] = []
     var score: Int = 0
-    var label: SKLabelNode = SKLabelNode(text: "Score: ")
     private var switchTimer: Timer?
     private var speedUpTimer: Timer?
 
     weak var delegate: ScoreBinProtocol? {
         didSet {
+            // Make sure delegate is set when setting up the bins
             randomizeBins()
         }
     }
-    
     
     init() {
         setupTimer()
@@ -58,6 +68,7 @@ class ScoreManager: ScoreManagerProtocol {
         switchTimer = Timer.scheduledTimer(withTimeInterval: 20, repeats: true, block: { timer in
             self.randomizeBins()
         })
+        // Tells delegate to increase gravity force
         speedUpTimer = Timer.scheduledTimer(withTimeInterval: 20, repeats: true, block: { timer in
             self.delegate?.didSpeedUp()
         })
@@ -65,41 +76,38 @@ class ScoreManager: ScoreManagerProtocol {
     
     private func randomizeBins() {
         scoreBins = []
-        var newScoreBins: [ScoreBin] = []
-        
         for _ in 1...3 {
             guard let randomShape = TetrisShape.allCases.randomElement(), let randomAngle = Angle.allCases.randomElement() else {
                 return
             }
             // Add a new score bin with a random shape and rotation 
-            newScoreBins.append(
+            scoreBins.append(
                 ScoreBin(
                     shape: randomShape,
-                    rotation: randomAngle.rawValue
+                    angle: randomAngle
                 )
             )
         }
-        scoreBins = newScoreBins
         
         delegate?.didResetScoreBins(scoreBins: scoreBins)
     }
     
-    func checkForScore(_ scoreBinNode: TheBin, currentBlock: TetrisBlockNode) -> Bool {
+    func checkForScore(_ scoreBin: ScoreBin, currentBlock: TetrisBlockNode) -> Bool {
         // Check if the current falling block has the same shape and rotation, which awards points
         switch currentBlock.shape {
         case .square:
-            guard scoreBinNode.scoreBin.shape == currentBlock.shape else {
+            // Square has no rotation
+            guard scoreBin.shape == currentBlock.shape else {
                 return false
             }
         case .tShape, .lShape:
-            guard scoreBinNode.scoreBin.shape == currentBlock.shape, Angle(rawValue: scoreBinNode.scoreBin.rotation) == currentBlock.angle else {
+            // Check precise rotation and shape
+            guard scoreBin.shape == currentBlock.shape, scoreBin.angle == currentBlock.angle else {
                 return false
             }
         case .long:
-            guard scoreBinNode.scoreBin.shape == currentBlock.shape else {
-                return false
-            }
-            guard ((currentBlock.angle == .zero || currentBlock.angle == .oneEighty) && (Angle(rawValue: scoreBinNode.scoreBin.rotation) == .zero || Angle(rawValue: scoreBinNode.scoreBin.rotation) == .oneEighty)) || ((currentBlock.angle == .ninety || currentBlock.angle == .twoSeventy) && (Angle(rawValue: scoreBinNode.scoreBin.rotation) == .ninety || Angle(rawValue: scoreBinNode.scoreBin.rotation) == .twoSeventy)) else {
+            // Only check whether its vertical or horizontal
+            guard scoreBin.shape == currentBlock.shape, Angle.isBothHorizontalOrVertical(angleA: currentBlock.angle, angleB: scoreBin.angle) else {
                 return false
             }
         }
@@ -110,6 +118,7 @@ class ScoreManager: ScoreManagerProtocol {
     
     private func addScore(for shape: TetrisShape) {
         score += shape.calculateScore()
-        label.text = "SCORE: \(score)"
+        // Update score
+        delegate?.updateScoreLabel(text: "SCORE: \(score)")
     }
 }
