@@ -9,11 +9,7 @@ import SwiftUI
 import SpriteKit
 
 struct GameView: View {
-    private var gameScene: GameScene = {
-        let gameScene = GameScene()
-        gameScene.scaleMode = .resizeFill
-        return gameScene
-    }()
+    @State private var gameScene = GameScene.create(isEmpty: false)
     
     var body: some View {
         SpriteView(scene: gameScene)

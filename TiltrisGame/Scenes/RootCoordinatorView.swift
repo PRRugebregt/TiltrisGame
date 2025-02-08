@@ -10,6 +10,15 @@ import SwiftUI
 struct RootCoordinatorView: View {
     @StateObject var coordinator = Coordinator()
     @State var selectedView: String?
+    @State var isSheetPresented = false
+    
+    init(coordinator: Coordinator = Coordinator(), selectedView: String? = nil, isSheetPresented: Bool = false) {
+        self._coordinator = StateObject(wrappedValue: coordinator)
+        self.selectedView = selectedView
+        self.isSheetPresented = isSheetPresented
+        // Customize navbar
+        UINavigationBar.appearance().backgroundColor = .black
+    }
     
     var body: some View {
         NavigationView {
@@ -25,6 +34,16 @@ struct RootCoordinatorView: View {
                 coordinator.build(for: .home)
                     .environmentObject(coordinator)
             }
+            .sheet(
+                isPresented: $isSheetPresented,
+                onDismiss: {
+                    coordinator.currentSheet = nil
+                }, content: {
+                    coordinator.buildSheet(for: coordinator.currentSheet ?? .settings)
+            })
+        }
+        .onChange(of: coordinator.currentSheet) { currentSheet in
+            isSheetPresented = currentSheet != nil
         }
         .onChange(of: coordinator.currentDestination) {
             guard coordinator.currentDestination != .home else { return }

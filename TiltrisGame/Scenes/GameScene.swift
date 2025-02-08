@@ -11,6 +11,8 @@ class GameScene: SKScene {
     private let motionManager: CMMotionManager = CMMotionManager()
     private var scoreManager: ScoreManagerProtocol = ScoreManager()
     
+    private let isEmpty: Bool // Indicates whether there are scoreBins or not
+    
     private var scoreLabel: SKLabelNode = SKLabelNode(text: "Score: 0")
     private var gameBounds: SKShapeNode?
     private var tetrisBlocks: [SKNode] = []
@@ -21,18 +23,28 @@ class GameScene: SKScene {
     
     private var gravityPull = 0.2
         
+    init(isEmpty: Bool) {
+        self.isEmpty = isEmpty
+        super.init(size: .zero)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func didMove(to view: SKView) {
         backgroundColor = .black
         
         physicsWorld.gravity = CGVector(dx: 0, dy: -gravityPull)
         physicsWorld.contactDelegate = self
         
-        scoreManager.delegate = self
-        
         startTrackingDeviceTilt()
         setupGameBounds(view: view)
-        setupScoreLabel()
         spawnBlock()
+        if !isEmpty {
+            scoreManager.delegate = self
+            setupScoreLabel()
+        }
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -77,26 +89,9 @@ class GameScene: SKScene {
     // MARK: Setup labels
     
     private func setupGameBounds(view: SKView) {
-        let lineWidth: CGFloat = 10
-        let safeInsets = view.safeAreaInsets
-        
-        let gameFrame = CGRect(
-            x: safeInsets.left + lineWidth,
-            y: safeInsets.bottom + lineWidth,
-            width: size.width - safeInsets.left - safeInsets.right - 2 * lineWidth,
-            height: size.height - safeInsets.top - safeInsets.bottom - 2 * lineWidth
-        )
-        
-        physicsBody = SKPhysicsBody(edgeLoopFrom: gameFrame)
-        physicsBody?.categoryBitMask = PhysicsCategory.bounds.rawValue
-        physicsBody?.contactTestBitMask = PhysicsCategory.block.rawValue
-        physicsBody?.collisionBitMask = PhysicsCategory.block.rawValue
-        
-        gameBounds = SKShapeNode(rect: gameFrame)
-        gameBounds?.strokeColor = .white
-        gameBounds?.lineWidth = lineWidth
-        
-        addChild(gameBounds!)
+        let gameBounds = NodeConfigurator.createGameBounds(size: self.size, view: view)
+        self.gameBounds = gameBounds
+        addChild(gameBounds)
     }
     
     private func setupScoreLabel() {
@@ -124,6 +119,12 @@ class GameScene: SKScene {
         currentBlock = block
         addChild(block)
     }
+    
+    static func create(isEmpty: Bool) -> GameScene {
+        let gameScene = GameScene(isEmpty: isEmpty)
+        gameScene.scaleMode = .resizeFill
+        return gameScene
+    }
 }
 
 extension GameScene: SKPhysicsContactDelegate {
@@ -139,9 +140,19 @@ extension GameScene: SKPhysicsContactDelegate {
         if bodyA.categoryBitMask == PhysicsCategory.scoreBin.rawValue {
             guard let scoreBinNode = bodyA.node as? BinNode else { return }
             isCorrect = scoreManager.checkForScore(scoreBinNode.scoreBin, currentBlock: currentBlock)
+            if !isCorrect {
+                print("### WRONG")
+                print("### scorebin Shape \(scoreBinNode.scoreBin.shape) Angle \(scoreBinNode.scoreBin.angle)")
+                print("### currentBlock Shape \(currentBlock.shape) Angle \(currentBlock.angle)")
+            }
         } else if bodyB.categoryBitMask == PhysicsCategory.scoreBin.rawValue {
             guard let scoreBinNode = bodyB.node as? BinNode else { return }
             isCorrect = scoreManager.checkForScore(scoreBinNode.scoreBin, currentBlock: currentBlock)
+            if !isCorrect {
+                print("### WRONG")
+                print("### scorebin Shape \(scoreBinNode.scoreBin.shape) Angle \(scoreBinNode.scoreBin.angle)")
+                print("### currentBlock Shape \(currentBlock.shape) Angle \(currentBlock.angle)")
+            }
         } else {
             return
         }
@@ -159,6 +170,7 @@ extension GameScene: SKPhysicsContactDelegate {
 
 extension GameScene: ScoreBinProtocol {
     func didResetScoreBins(scoreBins: [ScoreBin]) {
+        guard !isEmpty else { return }
         scoreBinNodes.forEach { $0.removeFromParent() }
         scoreBinNodes = []
         

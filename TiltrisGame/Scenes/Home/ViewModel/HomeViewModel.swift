@@ -21,4 +21,7 @@ class HomeViewModel: ObservableObject {
         Angle.allCases.randomElement() ?? .zero
     }
 
+    func randomX() -> CGFloat {
+        CGFloat.random(in: 100 ... 800)
+    }
 }

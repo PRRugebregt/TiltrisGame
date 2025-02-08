@@ -11,12 +11,13 @@ import SpriteKit
 struct HomeView: View {
     @EnvironmentObject var coordinator: Coordinator
     @StateObject var homeViewModel = HomeViewModel()
-    @State var isFalling = false
+    @State private var isFalling = false
     
     var body: some View {
         ZStack {
+            // Background
             Rectangle()
-                .background(.black)
+                .foregroundStyle(.black)
                 .ignoresSafeArea()
             // Falling tetrisShape
             TetrisShapeView(
@@ -27,39 +28,41 @@ struct HomeView: View {
             )
             .position(
                 CGPoint(
-                    x: CGFloat.random(in: 100 ... 800),
-                    y: isFalling ? 1200 : -800
+                    x: homeViewModel.randomX(),
+                    y: isFalling ? 800 : -800
                 )
             )
             .onAppear {
                 animate()
             }
             VStack {
+                // Logo
                 TetrisShapeView(screenWidth: UIScreen.main.bounds.width, blockWidth: 60)
-                    .frame(width: UIScreen.main.bounds.width, height: 200, alignment: .center)
+                    .frame(
+                        width: UIScreen.main.bounds.width,
+                        height: 200, 
+                        alignment: .center
+                    )
                     .ignoresSafeArea()
                     .padding()
+                // Title
                 HomeTitleView()
-                    .zIndex(20)
                     .padding()
                 Spacer()
-                Button(action: {
+                HomeButtonView(text: "Start game", color: .yellow) {
                     coordinator.navigate(to: .instruction)
-                }, label: {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 10)
-                            .foregroundColor(.yellow)
-                        Text("Start Game")
-                            .foregroundStyle(.black)
-                            .font(.title)
-                    }
-                    .frame(height: 80)
-                    .padding()
-                })
+                }
+                HomeButtonView(text: "Settings", color: .orange) {
+                    coordinator.sheet(destination: .settings)
+                }
                 Spacer()
             }
         }
+        .onAppear {
+            coordinator.currentDestination = .home
+        }
     }
+    
     private func animate() {
         withAnimation(.linear(duration: 5)) {
             isFalling = true

@@ -12,20 +12,24 @@ enum Destination: String {
     case home
     case instruction
     case game
+}
+
+enum SheetDestination: String {
     case settings
 }
 
-protocol NavigationProtocol {
-    func navigate(to: Destination)
-}
-
-class Coordinator: ObservableObject, NavigationProtocol {
+class Coordinator: ObservableObject {
     @Published var currentDestination: Destination = .home
+    @Published var currentSheet: SheetDestination?
     var path: [Destination] = []
     
     func navigate(to destination: Destination) {
         currentDestination = destination
         path.append(currentDestination)
+    }
+    
+    func sheet(destination: SheetDestination) {
+        currentSheet = destination
     }
     
     func didPop() {
@@ -39,11 +43,18 @@ class Coordinator: ObservableObject, NavigationProtocol {
         case .home:
             HomeView()
         case .instruction:
-            InstructionView()
+            InstructionView<InstructionViewModel>(viewModel: InstructionViewModel())
         case .game:
             GameView()
+                .toolbar(.hidden, for: .navigationBar)
+        }
+    }
+    
+    @ViewBuilder
+    func buildSheet(for destination: SheetDestination) -> some View {
+        switch destination {
         case .settings:
-            InstructionView()
+            SettingsView()
         }
     }
 }

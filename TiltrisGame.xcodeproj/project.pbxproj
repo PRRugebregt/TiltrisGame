@@ -30,6 +30,8 @@
 		01F5BC912D575D1100E2B8CF /* HomeTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F5BC902D575D1100E2B8CF /* HomeTitleView.swift */; };
 		01F5BC932D575D4600E2B8CF /* TetrisShapeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F5BC922D575D4600E2B8CF /* TetrisShapeView.swift */; };
 		01F5BC972D575E8500E2B8CF /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F5BC962D575E8500E2B8CF /* HomeViewModel.swift */; };
+		01F5BC992D578F3A00E2B8CF /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F5BC982D578F3A00E2B8CF /* SettingsView.swift */; };
+		01F5BC9B2D5790DF00E2B8CF /* HomeButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F5BC9A2D5790DF00E2B8CF /* HomeButtonView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -57,6 +59,8 @@
 		01F5BC902D575D1100E2B8CF /* HomeTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTitleView.swift; sourceTree = "<group>"; };
 		01F5BC922D575D4600E2B8CF /* TetrisShapeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TetrisShapeView.swift; sourceTree = "<group>"; };
 		01F5BC962D575E8500E2B8CF /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		01F5BC982D578F3A00E2B8CF /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		01F5BC9A2D5790DF00E2B8CF /* HomeButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeButtonView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -141,6 +145,7 @@
 				01F5BC852D55ECF800E2B8CF /* InstructionView.swift */,
 				01F5BC8B2D57522000E2B8CF /* RootCoordinatorView.swift */,
 				01F5BC8D2D57543600E2B8CF /* TetrisNodeViewRepresentable.swift */,
+				01F5BC982D578F3A00E2B8CF /* SettingsView.swift */,
 			);
 			path = Scenes;
 			sourceTree = "<group>";
@@ -160,6 +165,7 @@
 				01F5BC892D5751ED00E2B8CF /* HomeView.swift */,
 				01F5BC902D575D1100E2B8CF /* HomeTitleView.swift */,
 				01F5BC922D575D4600E2B8CF /* TetrisShapeView.swift */,
+				01F5BC9A2D5790DF00E2B8CF /* HomeButtonView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -257,12 +263,14 @@
 				01F5BC5B2D4E007400E2B8CF /* GameScene.swift in Sources */,
 				01F5BC822D53E1F900E2B8CF /* ScoreBinNode.swift in Sources */,
 				01F5BC842D5498E600E2B8CF /* BinNode.swift in Sources */,
+				01F5BC9B2D5790DF00E2B8CF /* HomeButtonView.swift in Sources */,
 				01F5BC7C2D51512B00E2B8CF /* TiltrisApp.swift in Sources */,
 				01F5BC972D575E8500E2B8CF /* HomeViewModel.swift in Sources */,
 				01F5BC862D55ECF800E2B8CF /* InstructionView.swift in Sources */,
 				01F5BC8A2D5751ED00E2B8CF /* HomeView.swift in Sources */,
 				01F5BC732D4EB31D00E2B8CF /* NodeConfigurator.swift in Sources */,
 				01F5BC552D4E007400E2B8CF /* AppDelegate.swift in Sources */,
+				01F5BC992D578F3A00E2B8CF /* SettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
