@@ -16,18 +16,20 @@ class TetrisBlockNode: SKNode {
         }
     }
     
-    private lazy var blockWidth = 20
+    private var blockWidth: CGFloat
     private lazy var blockSize = CGSize(width: blockWidth, height: blockWidth)
     private let hasPhysicsBody: Bool // Boolean whether this shape needs to be affected by gravity and collision
     
     init(
         tetrisShape: TetrisShape,
         angle: Angle = .zero,
-        hasPhysicsBody: Bool
+        hasPhysicsBody: Bool,
+        blockWidth: CGFloat = 20
     ) {
         self.shape = tetrisShape
         self.angle = angle
         self.hasPhysicsBody = hasPhysicsBody
+        self.blockWidth = blockWidth
         super.init()
         // Setup the block
         setup()

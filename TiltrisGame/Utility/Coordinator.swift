@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-enum Destination {
+enum Destination: String {
     case home
     case instruction
     case game
@@ -20,10 +20,17 @@ protocol NavigationProtocol {
 }
 
 class Coordinator: ObservableObject, NavigationProtocol {
-    @Published var currentDestination: Destination?
+    @Published var currentDestination: Destination = .home
+    var path: [Destination] = []
     
     func navigate(to destination: Destination) {
         currentDestination = destination
+        path.append(currentDestination)
+    }
+    
+    func didPop() {
+        path.removeLast()
+        currentDestination = path.last ?? .home
     }
     
     @ViewBuilder

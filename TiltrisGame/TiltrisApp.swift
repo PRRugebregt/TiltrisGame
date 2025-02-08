@@ -12,7 +12,7 @@ import SwiftUI
 struct TiltrisApp: App {
     var body: some Scene {
         WindowGroup {
-            GameView()
+            RootCoordinatorView()
         }
     }
 }

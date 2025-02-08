@@ -8,8 +8,17 @@
 import SwiftUI
 
 struct InstructionView: View {
+    @EnvironmentObject var coordinator: Coordinator
+    
     var body: some View {
-        Text("hello")
+        VStack {
+            Text("hello")
+        }
+        .background(Color.blue)
+        .ignoresSafeArea()
+        .onDisappear {
+            coordinator.didPop()
+        }
     }
 }
 
