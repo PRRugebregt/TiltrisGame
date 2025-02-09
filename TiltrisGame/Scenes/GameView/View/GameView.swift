@@ -10,16 +10,25 @@ import SpriteKit
 
 /// Container view for the spritekit scene
 struct GameView: View {
-    @State private var gameScene: GameScene = {
-        return GameScene.create(isEmpty: false)
-    }()
+    @EnvironmentObject var coordinator: Coordinator
+    @State private var gameScene: GameScene?
     
     var body: some View {
-        SpriteView(scene: gameScene)
-            .background(
-                Color.black
-                    .ignoresSafeArea()
+        VStack {
+            if let gameScene {
+                SpriteView(scene: gameScene)
+                    .background(
+                        Color.black
+                            .ignoresSafeArea()
+                    )
+            }
+        }
+        .onAppear {
+            self.gameScene = GameScene.create(
+                isEmpty: false,
+                difficulty: coordinator.appState.difficulty
             )
+        }
     }
 }
 

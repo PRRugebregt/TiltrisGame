@@ -7,11 +7,14 @@ protocol ScoreBinProtocol: AnyObject {
     func updateScoreLabel(text: String)
 }
 
+typealias Difficulty = SettingsItem.DifficultyOptions
+
 class GameScene: SKScene {
     private let motionManager: CMMotionManager = CMMotionManager()
     private var scoreManager: ScoreManagerProtocol = ScoreManager()
     
     private let isEmpty: Bool // Indicates whether there are scoreBins or not
+    private let difficulty: Difficulty
     
     private var scoreLabel: SKLabelNode = SKLabelNode(text: "Score: 0")
     private var gameBounds: SKShapeNode?
@@ -21,10 +24,19 @@ class GameScene: SKScene {
     
     private var isAnimating = false // Flag to check if the block is in the middle of animating 
     
-    private var gravityPull = 0.2
-        
-    init(isEmpty: Bool) {
+    private var gravityPull: Double
+    
+    init(isEmpty: Bool, difficulty: Difficulty) {
         self.isEmpty = isEmpty
+        self.difficulty = difficulty
+        switch difficulty {
+        case .easy:
+            gravityPull = 0.2
+        case .medium:
+            gravityPull = 0.6
+        case .hard:
+            gravityPull = 1
+        }
         super.init(size: .zero)
     }
     
@@ -124,8 +136,8 @@ class GameScene: SKScene {
         addChild(block)
     }
     
-    static func create(isEmpty: Bool) -> GameScene {
-        let gameScene = GameScene(isEmpty: isEmpty)
+    static func create(isEmpty: Bool, difficulty: SettingsItem.DifficultyOptions = .easy) -> GameScene {
+        let gameScene = GameScene(isEmpty: isEmpty, difficulty: difficulty)
         gameScene.scaleMode = .resizeFill
         return gameScene
     }

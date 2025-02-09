@@ -18,9 +18,15 @@ enum SheetDestination: String {
     case settings
 }
 
+struct AppState {
+    var colorTheme: Color = .yellow
+    var difficulty: SettingsItem.DifficultyOptions = .easy
+}
+
 class Coordinator: ObservableObject {
     @Published var currentSheet: SheetDestination?
     @Published var path: NavigationPath = NavigationPath()
+    @Published var appState: AppState = AppState()
     
     func navigate(to destination: Destination) {
         print("### navigate to destination \(destination)")
@@ -33,6 +39,14 @@ class Coordinator: ObservableObject {
     
     func didPop() {
         path.removeLast()
+    }
+    
+    func changeColorTheme(to color: Color) {
+        appState.colorTheme = color
+    }
+    
+    func changeDifficulty(to difficulty: SettingsItem.DifficultyOptions) {
+        appState.difficulty = difficulty
     }
     
     @ViewBuilder
@@ -52,7 +66,7 @@ class Coordinator: ObservableObject {
     func buildSheet(for destination: SheetDestination) -> some View {
         switch destination {
         case .settings:
-            SettingsView()
+            SettingsView(selectedDifficulty: .easy)
         }
     }
 }

@@ -35,7 +35,11 @@ struct RootCoordinatorView: View {
                     coordinator.currentSheet = nil
                 }, content: {
                     coordinator.buildSheet(for: coordinator.currentSheet ?? .settings)
+                        .environmentObject(coordinator)
             })
+        }
+        .onChange(of: coordinator.currentSheet) {
+            isSheetPresented = coordinator.currentSheet != nil 
         }
     }
 }
