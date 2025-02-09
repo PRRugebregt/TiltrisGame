@@ -11,8 +11,8 @@ import SpriteKit
 struct InstructionView<ViewModel: InstructionViewModelProtocol>: View {
     @EnvironmentObject var coordinator: Coordinator
     @StateObject var instructionViewModel: ViewModel
-    @State var showGame = false
-    
+
+    // State var to make sure Scene is not created everytime the view is redrawn
     @State private var emptyGameScene = {
         GameScene.create(isEmpty: true)
     }()
@@ -35,9 +35,11 @@ struct InstructionView<ViewModel: InstructionViewModelProtocol>: View {
                     Text(instructionViewModel.subtitleText)
                         .foregroundStyle(Color.white.opacity(0.8))
                         .font(.title3)
-                    HomeButtonView(text: instructionViewModel.buttonText, color: .yellow) {
-                        coordinator.navigate(to: .game)
-                    }
+                    HomeButtonView(
+                        text: instructionViewModel.buttonText,
+                        color: .yellow) {
+                            coordinator.navigate(to: .game)
+                        }
                     .frame(width: 300)
                     Spacer()
                 }
@@ -68,23 +70,6 @@ struct RotatedView: ViewModifier {
     }
 }
 
-protocol InstructionViewModelProtocol: AnyObject, ObservableObject {
-    var titleText: String { get }
-    var subtitleText: String { get }
-    var buttonText: String { get }
-    func startGame()
+#Preview {
+    InstructionView<InstructionViewModel>(viewModel: InstructionViewModel())
 }
-
-class InstructionViewModel: InstructionViewModelProtocol {
-    var titleText: String = "Rotate and tilt device"
-    var subtitleText: String = "Try to get every piece in the correct bin with the correct rotation"
-    var buttonText: String = "Let's play"
-    
-    func startGame() {
-        
-    }
-}
-
-//#Preview {
-//    InstructionView<InstructionViewModel>(viewModel: InstructionViewModel(), delegate: RootCoordinatorView())
-//}

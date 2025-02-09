@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Root navigation view 
 struct RootCoordinatorView: View {
     @StateObject var coordinator: Coordinator
     @State var isSheetPresented = false
