@@ -28,6 +28,10 @@ class GameScene: SKScene {
         super.init(size: .zero)
     }
     
+    deinit {
+        print("### DEINIT")
+    }
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -58,7 +62,7 @@ class GameScene: SKScene {
             return
         }
         
-        motionManager.accelerometerUpdateInterval = 0.1
+        motionManager.accelerometerUpdateInterval = 0.5
         
         motionManager.startAccelerometerUpdates(to: .main) { [weak self] (data, error) in
             guard let self = self, let data = data, error == nil else {
@@ -108,8 +112,8 @@ class GameScene: SKScene {
         guard let randomShape = TetrisShape.allCases.randomElement() else { return }
         
         let position = CGPoint(
-            x: CGFloat.random(in: 100 ... UIScreen.main.bounds.width - 100),
-            y: UIScreen.main.bounds.height - 200
+            x: UIScreen.main.bounds.width / 2,
+            y: UIScreen.main.bounds.height / 2
         )
         let block = TetrisBlockNode(
             tetrisShape: randomShape,
@@ -170,27 +174,19 @@ extension GameScene: SKPhysicsContactDelegate {
 
 extension GameScene: ScoreBinProtocol {
     func didResetScoreBins(scoreBins: [ScoreBin]) {
-        guard !isEmpty else { return }
+        guard !isEmpty, let gameFrame = gameBounds?.frame.size else { return }
         scoreBinNodes.forEach { $0.removeFromParent() }
         scoreBinNodes = []
         
-        let center = UIScreen.main.bounds.width / 2 - 50
+        let deltaY = (UIScreen.main.bounds.height - 100) / 4
         
         for (index, scoreBin) in scoreBins.enumerated() {
-            let scoreBinNode = ScoreBinNode(scoreBin: scoreBin)
-            var positionX: CGFloat {
-                switch index {
-                case 0:
-                    return center
-                case 1:
-                    return center - 110
-                case 2:
-                    return center + 110
-                default:
-                    return 0
-                }
-            }
-            scoreBinNode.position = CGPoint(x: positionX, y: 30)
+            let side: Side = index < 4 ? .left : .right
+            let scoreBinNode = ScoreBinNode(scoreBin: scoreBin, side: side)
+            let multiplyY = CGFloat(side == .left ? index : index - 4)
+            let positionY = (deltaY * multiplyY) + (scoreBinNode.calculateAccumulatedFrame().height / 2)
+            let positionX = side == .left ? 20 : gameFrame.width - 20
+            scoreBinNode.position = CGPoint(x: positionX, y: positionY)
             addChild(scoreBinNode)
             scoreBinNodes.append(scoreBinNode)
         }

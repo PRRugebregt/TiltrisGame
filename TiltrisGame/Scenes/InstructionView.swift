@@ -11,40 +11,37 @@ import SpriteKit
 struct InstructionView<ViewModel: InstructionViewModelProtocol>: View {
     @EnvironmentObject var coordinator: Coordinator
     @StateObject var instructionViewModel: ViewModel
+    @State var showGame = false
     
-    @State private var emptyGameScene = GameScene.create(isEmpty: true)
+    @State private var emptyGameScene = {
+        GameScene.create(isEmpty: true)
+    }()
     
     init(viewModel: @autoclosure @escaping () -> ViewModel) {
         self._instructionViewModel = StateObject(wrappedValue: viewModel())
     }
     
     var body: some View {
-        VStack {
-            ZStack {
-                Rectangle()
-                    .foregroundStyle(.black)
-                    .ignoresSafeArea()
-                SpriteView(scene: emptyGameScene)
-                    .onDisappear {
-                        emptyGameScene.removeAllActions()
-                        emptyGameScene.removeAllChildren()
+        ZStack {
+            Rectangle()
+                .foregroundStyle(.black)
+                .ignoresSafeArea()
+            SpriteView(scene: emptyGameScene)
+            GeometryReader { geometry in
+                VStack {
+                    Text(instructionViewModel.titleText)
+                        .foregroundStyle(.white)
+                        .font(.title)
+                    Text(instructionViewModel.subtitleText)
+                        .foregroundStyle(Color.white.opacity(0.8))
+                        .font(.title3)
+                    HomeButtonView(text: instructionViewModel.buttonText, color: .yellow) {
+                        coordinator.navigate(to: .game)
                     }
-                GeometryReader { geometry in
-                    VStack {
-                        Text(instructionViewModel.titleText)
-                            .foregroundStyle(.white)
-                            .font(.title)
-                        Text(instructionViewModel.subtitleText)
-                            .foregroundStyle(Color.white.opacity(0.9))
-                            .font(.title3)
-                        HomeButtonView(text: instructionViewModel.buttonText, color: .yellow) {
-                            coordinator.navigate(to: .game)
-                        }
-                        .frame(width: 300)
-                        Spacer()
-                    }
-                    .rotatedView(geometry: geometry)
+                    .frame(width: 300)
+                    Spacer()
                 }
+                .rotatedView(geometry: geometry)
             }
         }
     }
@@ -88,6 +85,6 @@ class InstructionViewModel: InstructionViewModelProtocol {
     }
 }
 
-#Preview {
-    InstructionView<InstructionViewModel>(viewModel: InstructionViewModel())
-}
+//#Preview {
+//    InstructionView<InstructionViewModel>(viewModel: InstructionViewModel(), delegate: RootCoordinatorView())
+//}

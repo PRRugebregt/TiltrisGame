@@ -11,6 +11,7 @@ import SpriteKit
 struct HomeView: View {
     @EnvironmentObject var coordinator: Coordinator
     @StateObject var homeViewModel = HomeViewModel()
+    @State private var shouldAnimate = true
     @State private var isFalling = false
     
     var body: some View {
@@ -58,12 +59,18 @@ struct HomeView: View {
                 Spacer()
             }
         }
+        // Somehow the animating falling Spriteview caused a out of memory crash whenever navigating away from this view. Making sure the animation stops when navigating away from this view.
         .onAppear {
-            coordinator.currentDestination = .home
+            shouldAnimate = true
+        }
+        .onDisappear {
+            shouldAnimate = false
         }
     }
     
     private func animate() {
+        print("### shouldAnimate \(shouldAnimate)")
+        guard shouldAnimate else { return }
         withAnimation(.linear(duration: 5)) {
             isFalling = true
         } completion: {

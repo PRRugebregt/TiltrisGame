@@ -8,13 +8,21 @@
 import Foundation
 import SpriteKit
 
+enum Side {
+    case left
+    case right
+}
+
 /// This is the scoreBin node, that displays which shape (and at what angle) you should drop in the bin to score points
 class ScoreBinNode: SKNode {
     let scoreBin: ScoreBin
+    let side: Side
     let scoreBinWidth: CGFloat = 100
+    private let strokeWidth: CGFloat = 10
     
-    init(scoreBin: ScoreBin) {
+    init(scoreBin: ScoreBin, side: Side) {
         self.scoreBin = scoreBin
+        self.side = side
         super.init()
         setup()
     }
@@ -34,14 +42,26 @@ class ScoreBinNode: SKNode {
         let tetrisShapeSize = tetrisShape.calculateAccumulatedFrame()
 
         tetrisShape.position = CGPoint(
-            x: scoreBinWidth / 2,
-            y: tetrisShapeSize.height / 2 + 20
+            x: calculateXPosition(tetrisShapeSize: tetrisShapeSize),
+            y: scoreBinWidth / 2 + (strokeWidth / 2)
         )
         tetrisShape.alpha = 0.4
         
-        let bin = BinNode(rect: CGRect(x: 0, y: 0, width: scoreBinWidth, height: 10), scoreBin: scoreBin)
-        
+        let bin = BinNode(
+            rect: CGRect(x: 0, y: 0, width: strokeWidth, height: scoreBinWidth),
+            scoreBin: scoreBin,
+            side: side
+        )
+                
         self.addChild(bin)
         self.addChild(tetrisShape)
+    }
+    
+    private func calculateXPosition(tetrisShapeSize: CGRect) -> CGFloat {
+        if side == .left {
+            return tetrisShapeSize.width / 2 + 20
+        } else {
+            return -tetrisShapeSize.width / 2 - 20
+        }
     }
 }

@@ -18,7 +18,7 @@ struct HomeButtonView: View {
         }, label: {
             ZStack {
                 RoundedRectangle(cornerRadius: 10)
-                    .foregroundColor(color)
+                    .foregroundStyle(color)
                 Text(text)
                     .foregroundStyle(.black)
                     .font(.title)

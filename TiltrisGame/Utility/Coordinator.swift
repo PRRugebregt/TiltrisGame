@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-enum Destination: String {
+enum Destination: String, Hashable, Equatable {
     case home
     case instruction
     case game
@@ -19,13 +19,12 @@ enum SheetDestination: String {
 }
 
 class Coordinator: ObservableObject {
-    @Published var currentDestination: Destination = .home
     @Published var currentSheet: SheetDestination?
-    var path: [Destination] = []
+    @Published var path: NavigationPath = NavigationPath()
     
     func navigate(to destination: Destination) {
-        currentDestination = destination
-        path.append(currentDestination)
+        print("### navigate to destination \(destination)")
+        self.path.append(destination)
     }
     
     func sheet(destination: SheetDestination) {
@@ -34,7 +33,6 @@ class Coordinator: ObservableObject {
     
     func didPop() {
         path.removeLast()
-        currentDestination = path.last ?? .home
     }
     
     @ViewBuilder

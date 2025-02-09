@@ -47,7 +47,7 @@ struct HomeTitleView: View {
                 // R
                 Text("R")
                     .font(Font.system(size: 30))
-                    .foregroundColor(.white)
+                    .foregroundStyle(.white)
                 // I
                 TetrisShapeView(
                     screenWidth: screenWidth,
@@ -58,13 +58,13 @@ struct HomeTitleView: View {
                 // S
                 Text("S")
                     .font(Font.system(size: 30))
-                    .foregroundColor(.white)
+                    .foregroundStyle(.white)
             }
             .padding()
 
             Rectangle()
                 .opacity(0.4)
-                .foregroundColor(.yellow)
+                .foregroundStyle(.yellow)
                 .ignoresSafeArea()
         }
         .frame(height: 40)

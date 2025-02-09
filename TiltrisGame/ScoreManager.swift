@@ -76,8 +76,9 @@ class ScoreManager: ScoreManagerProtocol {
     
     private func randomizeBins() {
         scoreBins = []
-        for _ in 1...3 {
-            guard let randomShape = TetrisShape.allCases.randomElement(), let randomAngle = Angle.allCases.randomElement() else {
+        for _ in 1...8 {
+            guard let randomShape = TetrisShape.allCases.randomElement(),
+                    let randomAngle = Angle.allCases.randomElement() else {
                 return
             }
             // Add a new score bin with a random shape and rotation 

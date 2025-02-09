@@ -9,7 +9,9 @@ import SwiftUI
 import SpriteKit
 
 struct GameView: View {
-    @State private var gameScene = GameScene.create(isEmpty: false)
+    @State private var gameScene: GameScene = {
+        return GameScene.create(isEmpty: false)
+    }()
     
     var body: some View {
         SpriteView(scene: gameScene)
@@ -17,6 +19,9 @@ struct GameView: View {
                 Color.black
                     .ignoresSafeArea()
             )
+            .onAppear {
+                print("### gamescene on appear")
+            }
     }
 }
 
