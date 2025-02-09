@@ -16,14 +16,20 @@ struct TetrisShapeView: View {
         
     init(screenWidth: CGFloat, blockWidth: CGFloat, shape: TetrisShape = .tShape, angle: Angle = .oneEighty) {
         let tetrisShapeScene = SKScene()
-        tetrisShapeScene.scaleMode = .resizeFill
-        let tetrisBlock = TetrisBlockNode(tetrisShape: shape, angle: angle, hasPhysicsBody: false, blockWidth: blockWidth)
-        self.block = tetrisBlock
-        tetrisBlock.position = CGPoint(x: screenWidth / 2, y: blockWidth * 2)
-        tetrisShapeScene.addChild(tetrisBlock)
+        let tetrisBlock = TetrisBlockNode(
+            tetrisShape: shape,
+            angle: angle,
+            hasPhysicsBody: false,
+            blockWidth: blockWidth
+        )
         
+        tetrisShapeScene.scaleMode = .resizeFill
+        tetrisShapeScene.addChild(tetrisBlock)
         tetrisShapeScene.backgroundColor = .clear
+    
+        tetrisBlock.position = CGPoint(x: screenWidth / 2, y: blockWidth * 2)
 
+        self.block = tetrisBlock
         self.tetrisShapeScene = tetrisShapeScene
     }
     
@@ -35,7 +41,7 @@ struct TetrisShapeView: View {
                 block.removeAllActions()
                 block.removeFromParent()
                 tetrisShapeScene.isPaused = true
-                tetrisShapeScene.view?.presentScene(nil) // ✅ Disconnect from `SpriteView`
+                tetrisShapeScene.view?.presentScene(nil)
                 tetrisShapeScene.removeAllActions()
                 tetrisShapeScene.removeAllChildren()
             }

@@ -17,7 +17,7 @@ enum Side {
 class ScoreBinNode: SKNode {
     let scoreBin: ScoreBin
     let side: Side
-    let scoreBinWidth: CGFloat = 100
+    let scoreBinWidth: CGFloat = 120
     private let strokeWidth: CGFloat = 10
     
     init(scoreBin: ScoreBin, side: Side) {

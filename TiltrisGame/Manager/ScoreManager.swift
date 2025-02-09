@@ -76,6 +76,7 @@ class ScoreManager: ScoreManagerProtocol {
     
     private func randomizeBins() {
         scoreBins = []
+        // Make 8 bins
         for _ in 1...8 {
             guard let randomShape = TetrisShape.allCases.randomElement(),
                     let randomAngle = Angle.allCases.randomElement() else {
@@ -103,12 +104,14 @@ class ScoreManager: ScoreManagerProtocol {
             }
         case .tShape, .lShape:
             // Check precise rotation and shape
-            guard scoreBin.shape == currentBlock.shape, scoreBin.angle == currentBlock.angle else {
+            guard scoreBin.shape == currentBlock.shape, 
+                    scoreBin.angle == currentBlock.angle else {
                 return false
             }
         case .long:
             // Only check whether its vertical or horizontal
-            guard scoreBin.shape == currentBlock.shape, Angle.isBothHorizontalOrVertical(angleA: currentBlock.angle, angleB: scoreBin.angle) else {
+            guard scoreBin.shape == currentBlock.shape, 
+                    Angle.isBothHorizontalOrVertical(angleA: currentBlock.angle, angleB: scoreBin.angle) else {
                 return false
             }
         }

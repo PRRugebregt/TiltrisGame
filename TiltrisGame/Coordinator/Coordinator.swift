@@ -28,27 +28,32 @@ class Coordinator: ObservableObject {
     @Published var path: NavigationPath = NavigationPath()
     @Published var appState: AppState = AppState()
     
+    /// Updates navigationPath
     func navigate(to destination: Destination) {
-        print("### navigate to destination \(destination)")
         self.path.append(destination)
     }
     
+    /// Updates sheet to present
     func sheet(destination: SheetDestination) {
         currentSheet = destination
     }
     
+    /// Pop the last destination from path
     func didPop() {
         path.removeLast()
     }
     
+    /// Change colorTheme App state
     func changeColorTheme(to color: Color) {
         appState.colorTheme = color
     }
     
+    /// Change difficulty App state
     func changeDifficulty(to difficulty: SettingsItem.DifficultyOptions) {
         appState.difficulty = difficulty
     }
     
+    /// Build the views for navigation
     @ViewBuilder
     func build(for destination: Destination) -> some View {
         switch destination {
@@ -62,6 +67,7 @@ class Coordinator: ObservableObject {
         }
     }
     
+    /// Build the sheets to display
     @ViewBuilder
     func buildSheet(for destination: SheetDestination) -> some View {
         switch destination {

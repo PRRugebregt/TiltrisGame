@@ -11,6 +11,7 @@ import SpriteKit
 struct HomeView: View {
     @EnvironmentObject var coordinator: Coordinator
     @StateObject var homeViewModel = HomeViewModel()
+    
     @State private var shouldAnimate = true
     @State private var isFalling = false
     
@@ -69,7 +70,6 @@ struct HomeView: View {
     }
     
     private func animate() {
-        print("### shouldAnimate \(shouldAnimate)")
         guard shouldAnimate else { return }
         withAnimation(.linear(duration: 5)) {
             isFalling = true
